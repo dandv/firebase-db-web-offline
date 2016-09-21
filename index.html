@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+<title>Firebase Realtime Database offline sample</title>
+<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+</head>
+
+<body>
+<h1>Illustrating Firebase Realtime Database <a href="https://firebase.google.com/docs/database/web/save-data#write_data_offline">offline capabilities</a></h1>
+<p>Disconnect, then <button onclick="addMessage()">add message</button>(s).</p>
+<p>While offline, writes are stored locally, and <code>on_child</code> triggers.</p>
+<p>After reconnecting, the writes are synced to Firebase Realtime Database.</p>
+<p>You can close and reopen the page and will see the messages you've added while offline.</p>
+<p>View the source for more information.</p>
+<div><ul id="messages"></ul></div>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyAqXoYp201MrBg_tolN9xAsEeiV4qvjDaY",
+    databaseURL: "https://web-offline-db.firebaseio.com",
+    storageBucket: "web-offline-db.appspot.com",
+  });
+
+  let messages = firebase.database().ref('/');
+  let ul = document.getElementById('messages');
+
+  function addMessage() {
+    messages.push({timestamp: Date()});
+  }
+
+  messages.on('child_added', function (data) {
+    console.log('on child_added');
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(JSON.stringify(data.val())));
+    ul.insertBefore(li, ul.firstChild);
+  });
+</script>
+
+
+</body>
+</html>
